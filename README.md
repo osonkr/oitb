@@ -24,7 +24,7 @@ Again, top image is the one generated in HTML/CSS and
 ![img.png](Windows-UAC/img.png)
 
 This one is a screenshot of the native window.
-![](Windows-UAC/UAC Prompt.png)
+![](Windows-UAC/uacprompt.png)
 
 Variables to modify:
 - **XX-C2API-XX** - Url to send username/password to via POST request
