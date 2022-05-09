@@ -18,9 +18,17 @@ knows of a similar attribute for Keepass let me know.
 You'll really just want to replace the variable
 - **XX-C2API-XX** - Url to send password to via POST request
 
+## Windows-UAC
+
+Again, top image is the one generated in HTML/CSS and
+![img.png](Windows-UAC/img.png)
+
+This one is a screenshot of the native window.
+![](Windows-UAC/UAC Prompt.png)
+
+Variables to modify:
+- **XX-C2API-XX** - Url to send username/password to via POST request
+- **XX-APPLICATION-NAME-XX** - Name of application to request as
+- **XX-APPLICATION-ICON-XX** - Image of application to request as
 
 
-# TODO
-___
-- [x] MacOSX Keychain Access Window
-- [ ] Windows UAC Prompt
